@@ -84,6 +84,19 @@ class OptionParser {
 
     protected $standard_option_list = array();
 
+    public $_positional;
+    public $option_list;
+    public $option_class;
+    public $description;
+    public $epilog;
+    public $defaults;
+    public $formatter;
+    public $prog;
+    public $values;
+    public $version;
+    public $conflict_handler;
+    public $usage;
+
     public function __construct($settings=array()) {
         $this->_positional = array();
         $this->option_list = $this->standard_option_list;
@@ -879,6 +892,9 @@ function OptionContainer_format_option_help($container, $formatter) {
  * arguments.
  **/
 class Values {
+    public $options;
+    public $positional;
+
     public function __construct($options, $positional) {
         $this->options = $options;
         $this->positional = $positional;
@@ -928,6 +944,20 @@ class Option {
         "store_const",
         "append_const"
     );
+
+    public $disabled_strings;
+    public $option_strings;
+    public $type;
+    public $choices;
+    public $action;
+    public $default;
+    public $help;
+    public $callback;
+    public $callback_args;
+    public $const;
+    public $dest;
+    public $metavar;
+    public $nargs;
 
     public function __construct($settings) {
         $option_strings = array();
@@ -1467,6 +1497,14 @@ class Option {
 }
 
 class IndentedHelpFormatter {
+    public $option_strings;
+    public $current_indent;
+    public $indent_increment;
+    public $width;
+    public $max_help_position;
+    public $help_position;
+    public $help_width;
+
     public function __construct($indent_increment=2,
                                 $max_help_position=24,
                                 $width=Null,
