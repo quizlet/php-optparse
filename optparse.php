@@ -1028,7 +1028,7 @@ class Option {
         $this->metavar = _array_pop_elem(
             $settings,
             "metavar",
-            strtoupper($this->dest)
+            strtoupper($this->dest === null ? '' : $this->dest)
         );
 
         $this->nargs = _array_pop_elem($settings, "nargs", $this->nargs);
