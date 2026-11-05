@@ -37,12 +37,15 @@ function _translate($string, $variables=array(),
     assert( function_exists($translator) );
     $new_text = $translator($string);
 
-    // Use values from $variables to replace pattends of the form %(name)s
+    // Use values from $variables to replace pattends of the form %(name)s.
+    // strtr makes a single literal pass, so substituted values are never
+    // re-scanned for placeholders or regex backreferences.
+    $replacements = array();
     foreach ($variables as $name => $var) {
-        $new_text = preg_replace("/%\($name\)s/", $var, $new_text);
+        $replacements["%($name)s"] = $var;
     }
 
-    return $new_text;
+    return strtr($new_text, $replacements);
 }
 
 /**
@@ -332,7 +335,7 @@ class OptionParser {
      * @author Gabriel Filion <lelutin@gmail.com>
      **/
     public function print_usage($stream=STDOUT) {
-        fprintf($stream, $this->get_usage() );
+        fwrite($stream, $this->get_usage() );
     }
 
     /**
@@ -347,7 +350,7 @@ class OptionParser {
     public function print_help($stream=STDOUT) {
         // TODO encode the string from format_help to ensure it is suitable for
         // output.
-        fprintf($stream, $this->format_help() );
+        fwrite($stream, $this->format_help() );
     }
 
     /**
@@ -452,7 +455,7 @@ class OptionParser {
             $this->get_version()
         );
 
-        fprintf($stream, $version. "\n\n" );
+        fwrite($stream, $version. "\n\n" );
     }
 
     /**
@@ -639,7 +642,7 @@ class OptionParser {
 
         $l10n_error = _translate("error");
 
-        fprintf(STDERR, "$prog: $l10n_error: $text\n");
+        fwrite(STDERR, "$prog: $l10n_error: $text\n");
         exit($code);
     }
 
