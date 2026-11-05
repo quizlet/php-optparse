@@ -228,7 +228,7 @@ class OptionParser {
         $found = Null;
 
         foreach ($this->option_list as $opt) {
-            if ( in_array($text, $opt->option_strings) ) {
+            if ( in_array($text, $opt->option_strings, true) ) {
                 $found = $opt;
                 break;
             }
@@ -249,7 +249,7 @@ class OptionParser {
      **/
     public function has_option($text) {
         foreach ($this->option_list as $opt) {
-            if ( in_array($text, $opt->option_strings) ) {
+            if ( in_array($text, $opt->option_strings, true) ) {
                 return true;
             }
         }
@@ -271,7 +271,7 @@ class OptionParser {
         $found = false;
 
         foreach ($this->option_list as $key => $opt) {
-            if ( in_array($text, $opt->option_strings) ) {
+            if ( in_array($text, $opt->option_strings, true) ) {
                 $strings = $opt->option_strings;
 
                 unset( $this->option_list[$key] );
@@ -858,7 +858,7 @@ class OptionParser {
         foreach ($option_strings as $option_text) {
 
             foreach ($options as $option) {
-                $index = array_search($option_text, $option->disabled_strings);
+                $index = array_search($option_text, $option->disabled_strings, true);
 
                 if ($index !== false) {
                     $option->option_strings[] = $option_text;
@@ -1106,7 +1106,7 @@ class Option {
      * @author Gabriel Filion <lelutin@gmail.com>
      **/
     private function _check_choice($value, $opt_string) {
-        if ($this->choices !== Null && ! in_array($value, $this->choices) ) {
+        if ($this->choices !== Null && ! $this->_is_choice($value) ) {
             $vals = array(
                 "opt" => $opt_string,
                 "val" => $value,
@@ -1118,6 +1118,34 @@ class Option {
             );
             throw new OptionValueError($msg);
         }
+    }
+
+    /**
+     * Tell whether a value is identical to one of the choices.
+     *
+     * Loose comparison would let other spellings of a numeric choice (e.g.
+     * "01" or "1e1" for "1" or "10") through, so a string only matches a
+     * string choice that is identical to it, or an int or float choice whose
+     * string form is identical to it.
+     *
+     * @return boolean
+     **/
+    private function _is_choice($value) {
+        if (! is_string($value) ) {
+            return in_array($value, $this->choices, true);
+        }
+
+        foreach ($this->choices as $choice) {
+            if (is_int($choice) || is_float($choice) ) {
+                $choice = (string) $choice;
+            }
+
+            if ($choice === $value) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -1229,7 +1257,7 @@ class Option {
      * @author Gabriel Filion <lelutin@gmail.com>
      **/
     public function disable_string($opt_text) {
-        $index = array_search($opt_text, $this->option_strings);
+        $index = array_search($opt_text, $this->option_strings, true);
 
         if ( $index === false ) {
             $vals = array("opt" => $opt_text);
