@@ -332,7 +332,7 @@ class OptionParser {
      * @author Gabriel Filion <lelutin@gmail.com>
      **/
     public function print_usage($stream=STDOUT) {
-        fprintf($stream, $this->get_usage() );
+        fwrite($stream, $this->get_usage() );
     }
 
     /**
@@ -347,7 +347,7 @@ class OptionParser {
     public function print_help($stream=STDOUT) {
         // TODO encode the string from format_help to ensure it is suitable for
         // output.
-        fprintf($stream, $this->format_help() );
+        fwrite($stream, $this->format_help() );
     }
 
     /**
@@ -452,7 +452,7 @@ class OptionParser {
             $this->get_version()
         );
 
-        fprintf($stream, $version. "\n\n" );
+        fwrite($stream, $version. "\n\n" );
     }
 
     /**
@@ -639,7 +639,7 @@ class OptionParser {
 
         $l10n_error = _translate("error");
 
-        fprintf(STDERR, "$prog: $l10n_error: $text\n");
+        fwrite(STDERR, "$prog: $l10n_error: $text\n");
         exit($code);
     }
 
