@@ -37,12 +37,15 @@ function _translate($string, $variables=array(),
     assert( function_exists($translator) );
     $new_text = $translator($string);
 
-    // Use values from $variables to replace pattends of the form %(name)s
+    // Use values from $variables to replace pattends of the form %(name)s.
+    // strtr makes a single literal pass, so substituted values are never
+    // re-scanned for placeholders or regex backreferences.
+    $replacements = array();
     foreach ($variables as $name => $var) {
-        $new_text = preg_replace("/%\($name\)s/", $var, $new_text);
+        $replacements["%($name)s"] = $var;
     }
 
-    return $new_text;
+    return strtr($new_text, $replacements);
 }
 
 /**
