@@ -228,7 +228,7 @@ class OptionParser {
         $found = Null;
 
         foreach ($this->option_list as $opt) {
-            if ( in_array($text, $opt->option_strings) ) {
+            if ( in_array($text, $opt->option_strings, true) ) {
                 $found = $opt;
                 break;
             }
@@ -249,7 +249,7 @@ class OptionParser {
      **/
     public function has_option($text) {
         foreach ($this->option_list as $opt) {
-            if ( in_array($text, $opt->option_strings) ) {
+            if ( in_array($text, $opt->option_strings, true) ) {
                 return true;
             }
         }
@@ -271,7 +271,7 @@ class OptionParser {
         $found = false;
 
         foreach ($this->option_list as $key => $opt) {
-            if ( in_array($text, $opt->option_strings) ) {
+            if ( in_array($text, $opt->option_strings, true) ) {
                 $strings = $opt->option_strings;
 
                 unset( $this->option_list[$key] );
@@ -858,7 +858,7 @@ class OptionParser {
         foreach ($option_strings as $option_text) {
 
             foreach ($options as $option) {
-                $index = array_search($option_text, $option->disabled_strings);
+                $index = array_search($option_text, $option->disabled_strings, true);
 
                 if ($index !== false) {
                     $option->option_strings[] = $option_text;
@@ -1257,7 +1257,7 @@ class Option {
      * @author Gabriel Filion <lelutin@gmail.com>
      **/
     public function disable_string($opt_text) {
-        $index = array_search($opt_text, $this->option_strings);
+        $index = array_search($opt_text, $this->option_strings, true);
 
         if ( $index === false ) {
             $vals = array("opt" => $opt_text);
